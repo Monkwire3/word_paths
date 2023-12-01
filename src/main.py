@@ -3,6 +3,7 @@ import argparse
 import datetime
 from collections import defaultdict
 import math
+import itertools
 
 def get_variations(word):
     variations = []
@@ -183,6 +184,7 @@ def find_path_efficient(start_word, end_word, dictionary, graph=None):
 
 
 def main():
+    print("loading...")
     parser = argparse.ArgumentParser(prog="findpath", description="Finds the shortest path between two words")
     parser.add_argument('-p', '--path')
     args = parser.parse_args()
@@ -193,19 +195,33 @@ def main():
         if os.path.isfile(args.path):
             PATH = args.path
         else:
-            print(f"{args.path} is not a valid file path. Instead using {PATH}.")
+            print(f"{args.path} is not a valid file path. Instead using {PATH}.\n")
 
     words = []
     with open(PATH, "r") as f:
         words = f.read().split("\n")
 
     graph = build_graph(words)
+
+    user_input = ""
+
+    while user_input not in  ["quit", "exit"]:
+        user_input = input("Enter two words, separated by a space: \n").split(" ")
+        if len(user_input) == 2:
+            word_1, word_2 = user_input
+            start_time = datetime.datetime.now()
+            path = find_path_efficient(word_1, word_2, words, graph)
+            end_time = datetime.datetime.now()
+            print("=" * os.get_terminal_size(0)[0])
+            print(path)
+            print("Found in ", end_time - start_time, "seconds.")
+            print("=" * os.get_terminal_size(0)[0])
+
+
+
+
+
     start_time = datetime.datetime.now()
-    print(find_path_efficient("book", "nook", words, graph))
-    print(find_path_efficient("run", "runt", words, graph))
-    print(find_path_efficient("brunt", "front", words, graph))
-    print(find_path_efficient("choose", "coke", words, graph))
-    print(find_path_efficient("zebra", "coke", words, graph))
     end_time = datetime.datetime.now()
     print("time efficient: ", end_time - start_time)
 
