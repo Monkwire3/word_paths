@@ -57,7 +57,8 @@ def build_graph():
     return graph
 
 
-def get_adjacent(start_word, words, avoid_words=[]):
+def get_adjacent(start_word, words, avoid_words=set()):
+    avoid_words.add(start_word)
     adjacent_words = []
     for i, word in enumerate(words):
 
@@ -108,14 +109,14 @@ def main():
         words = f.read().split("\n")
     # graph = build_graph()
 
-    start_words = ["one", "floss"]
-    end_words = ["boney", "brass"]
-    for i in range(len(start_words)):
-        s = start_words[i]
-        e = end_words[i]
-        print("=" * 10)
-        print("start: ", s, "end: ", e)
-        print(bfs(s, e, words))
-        print("=" * 10)
+    # start_words = ["one", "floss"]
+    # end_words = ["boney", "brass"]
+    # for i in range(len(start_words)):
+    #     s = start_words[i]
+    #     e = end_words[i]
+    #     print("=" * 10)
+    #     print("start: ", s, "end: ", e)
+    #     print(bfs(s, e, words))
+    #     print("=" * 10)
 
 main()
