@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 def is_one_change_away(a, b):
     diff_count = 0
 
@@ -43,43 +46,8 @@ def is_one_change_away(a, b):
 
     return True
 
-def build_graph():
-    graph = dict()
-
-    with open("./words.txt", "r") as f:
-        all_words = f.read().split("\n")
-        for i, word in enumerate(all_words):
-            print(f"building graph: {i}/{len(all_words)}")
-            graph[word] = get_adjacent(word, all_words)
 
 
-
-    return graph
-
-
-def get_adjacent(start_word, words, avoid_words=set()):
-    avoid_words.add(start_word)
-    adjacent_words = []
-    for i, word in enumerate(words):
-
-        if word not in avoid_words and is_one_change_away(start_word, word):
-            adjacent_words.append(word)
-
-    return adjacent_words
-
-
-
-# def find_word(word, goal, visited, graph):
-#     if word == goal:
-#         return [word]
-#
-#
-#     visited.add(word)
-#
-#     if len(list(filter(lambda x: x not in visited, graph[word]))):
-#         return [word] + [min(map(lambda x: find_word(x, goal, visited, graph), filter(lambda y: y not in visited, graph[word])), key=len)]
-#
-#     return []
 
 
 
@@ -100,23 +68,86 @@ def bfs(start_word, end_word, words):
                 queue.append(visiting + [word])
 
 
+def get_adjacent(start_word, words, avoid_words=set()):
+    avoid_words.add(start_word)
+    adjacent_words = []
+    for i, word in enumerate(words):
 
+        if word not in avoid_words and is_one_change_away(start_word, word):
+            adjacent_words.append(word)
+
+    return adjacent_words
+
+
+def find_path(start_word, end_word, dictionary, graph=None):
+    if not graph:
+        graph = build_graph(dictionary)
+    paths = dict()
+    paths[start_word] = start_word
+    avoid = set()
+
+    queue = [start_word]
+
+    while len(queue):
+        current = queue.pop(0)
+        avoid.add(current)
+
+        if current == end_word:
+            path = [current]
+            prev = paths[end_word]
+            path.append(prev)
+
+            while prev != start_word:
+                prev = paths[prev]
+                path.append(prev)
+
+            return path[::-1]
+
+        variations = get_variations(current)
+        for variation in variations:
+            for neighbor in graph[variation]:
+                if neighbor not in avoid:
+                    if neighbor not in paths:
+                        paths[neighbor] = current
+                    queue.append(neighbor)
+
+    return []
+
+
+
+def get_variations(word):
+    variations = []
+
+    for i in range(len(word)):
+        variations.append(word[:i] + "_" + word[i:])
+        variations.append(word[:i] + "_" + (word[i + 1:] if i < len(word) - 1 else ""))
+    variations.append(word + "_")
+
+    return variations
+
+
+
+def build_graph(words):
+    graph = defaultdict(list)
+
+    for word in words:
+        variations = get_variations(word)
+        for v in variations:
+            graph[v].append(word)
+
+    return graph
 
 
 def main():
     words = []
     with open("./words.txt", "r") as f:
         words = f.read().split("\n")
-    # graph = build_graph()
 
-    # start_words = ["one", "floss"]
-    # end_words = ["boney", "brass"]
-    # for i in range(len(start_words)):
-    #     s = start_words[i]
-    #     e = end_words[i]
-    #     print("=" * 10)
-    #     print("start: ", s, "end: ", e)
-    #     print(bfs(s, e, words))
-    #     print("=" * 10)
+    graph = build_graph(words)
+    print(find_path("book", "nook", words, graph))
+    print(find_path("run", "runt", words, graph))
+    print(find_path("brunt", "front", words, graph))
+    print(find_path("choose", "coke", words, graph))
+    print(find_path("zebra", "coke", words, graph))
 
 main()
