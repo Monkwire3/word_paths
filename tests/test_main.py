@@ -1,6 +1,3 @@
-import sys
-import os
-import src
 import unittest
 from src.main import find_path
 
