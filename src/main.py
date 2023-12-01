@@ -214,25 +214,8 @@ def main():
             end_time = datetime.datetime.now()
             print("=" * os.get_terminal_size(0)[0])
             print(path)
-            print("Found in ", end_time - start_time, "seconds.")
+            print("Found in", (end_time - start_time).microseconds, "microseconds.")
             print("=" * os.get_terminal_size(0)[0])
 
-
-
-
-
-    start_time = datetime.datetime.now()
-    end_time = datetime.datetime.now()
-    print("time efficient: ", end_time - start_time)
-
-
-    start_time = datetime.datetime.now()
-    print(find_path("book", "nook", words, graph))
-    print(find_path("run", "runt", words, graph))
-    print(find_path("brunt", "front", words, graph))
-    print(find_path("choose", "coke", words, graph))
-    print(find_path("zebra", "coke", words, graph))
-    end_time = datetime.datetime.now()
-    print("time normal: ", end_time - start_time)
 
 main()
