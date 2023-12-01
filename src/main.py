@@ -1,3 +1,5 @@
+import os
+import argparse
 import datetime
 from collections import defaultdict
 import math
@@ -181,8 +183,20 @@ def find_path_efficient(start_word, end_word, dictionary, graph=None):
 
 
 def main():
+    parser = argparse.ArgumentParser(prog="findpath", description="Finds the shortest path between two words")
+    parser.add_argument('-p', '--path')
+    args = parser.parse_args()
+
+    PATH = "/usr/share/dict/words"
+
+    if args.path:
+        if os.path.isfile(args.path):
+            PATH = args.path
+        else:
+            print(f"{args.path} is not a valid file path. Instead using {PATH}.")
+
     words = []
-    with open("./words.txt", "r") as f:
+    with open(PATH, "r") as f:
         words = f.read().split("\n")
 
     graph = build_graph(words)
