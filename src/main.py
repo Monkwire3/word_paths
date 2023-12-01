@@ -80,6 +80,16 @@ def path_overlap(path_1, path_2):
 def find_path_efficient(start_word, end_word, dictionary, graph=None):
     if not graph:
         graph = build_graph(dictionary)
+
+    if start_word == end_word:
+        return [start_word]
+
+
+    for v in get_variations(start_word):
+        if end_word in graph[v]:
+            return [start_word, end_word]
+
+
     start_to_end_paths = dict()
     start_to_end_paths[start_word] = (start_word, 0)
     start_to_end_avoid = set()
@@ -94,6 +104,8 @@ def find_path_efficient(start_word, end_word, dictionary, graph=None):
     while len(start_to_end_queue) and len(end_to_start_queue):
         start_to_end_current = start_to_end_queue.pop(0)
         end_to_start_current = end_to_start_queue.pop(0)
+        start_to_end_avoid.add(start_to_end_current)
+        end_to_start_avoid.add(end_to_start_current)
 
 
         if start_to_end_current == end_word:
@@ -152,7 +164,7 @@ def find_path_efficient(start_word, end_word, dictionary, graph=None):
                     if neighbor not in start_to_end_paths:
                         start_to_end_paths[neighbor] = (start_to_end_current, start_to_end_paths[start_to_end_current][1]+ 1)
 
-                    start_to_end_queue.append(neighbor)
+                        start_to_end_queue.append(neighbor)
 
 
         end_to_start_variations = get_variations(end_to_start_current)
@@ -161,7 +173,7 @@ def find_path_efficient(start_word, end_word, dictionary, graph=None):
                 if neighbor not in end_to_start_avoid:
                     if neighbor not in end_to_start_paths:
                         end_to_start_paths[neighbor] = (end_to_start_current, end_to_start_paths[end_to_start_current][1]+ 1)
-                    end_to_start_queue.append(neighbor)
+                        end_to_start_queue.append(neighbor)
 
 
     return []
