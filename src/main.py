@@ -6,8 +6,35 @@ from collections import defaultdict, deque
 from typing import DefaultDict
 
 
-def build_graph(words) -> DefaultDict[str, set[str]]:
-    def get_variations(word) -> list[str]:
+class WordGraph:
+    def __init__(self, dictionary) -> None:
+        self.dictionary = dictionary
+        self.graph = defaultdict(set)
+
+        variations_graph = defaultdict(list)
+
+        for i, word in enumerate(self.dictionary):
+            word = word.strip().lower()
+            variations = self.get_variations(word)
+            for v in variations:
+                variations_graph[v].append(word)
+
+
+        for i, word in enumerate(self.dictionary):
+            for variation in self.get_variations(word.strip().lower()):
+                for neighbor in variations_graph[variation]:
+                    if neighbor != word:
+                        self.graph[word].add(neighbor)
+                        self.graph[neighbor].add(word)
+
+    @classmethod
+    def build_from_file(cls,  path: str) -> "WordGraph":
+        with open(path, "r") as f:
+            return cls(f.readlines())
+
+
+    @classmethod
+    def get_variations(cls, word) -> list[str]:
         variations = []
 
         for i in range(len(word)):
@@ -17,28 +44,12 @@ def build_graph(words) -> DefaultDict[str, set[str]]:
 
         return variations
 
-    variations_graph = defaultdict(list)
-
-    for i, word in enumerate(words):
-        variations = get_variations(word)
-        for v in variations:
-            variations_graph[v].append(word)
-
-    graph = defaultdict(set)
-    for i, word in enumerate(words):
-        for variation in get_variations(word):
-            for neighbor in variations_graph[variation]:
-                if neighbor != word:
-                    graph[word].add(neighbor)
-                    graph[neighbor].add(word)
-
-    return graph
 
 
 class WordPath:
-    def __init__(self, start_word: str, end_word: str, graph: DefaultDict[str, set[str]]) -> None:
-        self.start_word = start_word
-        self.end_word = end_word
+    def __init__(self, start_word: str, end_word: str, graph: WordGraph) -> None:
+        self.start_word = start_word.lower()
+        self.end_word = end_word.lower()
         self.paths = dict()
         self.paths[start_word] = start_word
         self.queue = deque()
@@ -48,7 +59,7 @@ class WordPath:
     def find_one_step(self) -> None:
         current = self.queue.popleft()
 
-        for neighbor in self.graph[current]:
+        for neighbor in self.graph.graph[current]:
             if neighbor != current and neighbor not in self.paths:
                 self.paths[neighbor] = current
                 self.queue.append(neighbor)
@@ -67,46 +78,73 @@ class WordPath:
         return []
 
 
+def print_if(string: str, condition: bool) -> None:
+    if condition:
+        print(string)
 
-def set_up_args() -> argparse.Namespace:
-    sys.stdout.flush()
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="findpath", description="Finds the shortest path between two words")
-    parser.add_argument('-p', '--path')
-    parser.add_argument('-b', '--buffer')
-    parser.add_argument('-i', '--interactive', action='store_true')
-
+    parser.add_argument('-p', '--path', default="/usr/share/dict/words")
+    parser.add_argument('-b', '--benchmark', default=False)
+    parser.add_argument('-i', '--interactive', action='store_true', default=False)
 
     args = parser.parse_args()
     return args
 
 
 def main():
-    args = set_up_args()
-    PATH = args.path if args.path and os.path.isfile(args.path) else "/usr/share/dict/words"
+    args = parse_args()
+    interactive = sys.stdout.isatty()
+    start_time, end_time = 0, 0
 
 
-    words = []
-    with open(PATH, "r") as f:
-        words = f.read().split("\n")
+    print_if(f"Building graph from {args.path}", interactive)
 
-    print(f"Building graph from {PATH}")
-    graph = build_graph(words)
+    if args.benchmark:
+        start_time = time.perf_counter_ns()
 
+    graph = WordGraph.build_from_file(args.path)
 
-    if args.interactive:
+    if args.benchmark:
+        end_time = time.perf_counter_ns()
+
+    print_if(f"Graph built in {(end_time - start_time) // 10 ** 6} milliseconds.", interactive and args.benchmark)
+
+    if interactive:
         print("Loading interactive mode...")
+        print("Type 'quit' or 'exit' to end program.")
         user_input = ""
-        while user_input not in  ["quit", "exit"]:
+        while True:
             user_input = input("Enter two words, separated by a space: \n").split(" ")
             if len(user_input) == 2:
                 word_1, word_2 = user_input
-                start_time = time.perf_counter_ns()
-                path = WordPath(word_1, word_2, graph).get_path()
-                end_time = time.perf_counter_ns()
+
+                if args.benchmark:
+                    start_time = time.perf_counter_ns()
+
+                path = WordPath(word_1, word_2, graph)
+                print(path.paths)
+                print(path.get_path())
+
+
+                if args.benchmark:
+                    end_time = time.perf_counter_ns()
+
                 print("=" * os.get_terminal_size(0)[0])
-                print(path)
-                print("Found in", (end_time - start_time) // 10 ** 6, "milliseconds.")
+                print(" -> ".join(path.get_path()))
+                print_if(f"Found in {(end_time - start_time) // 10 ** 6} milliseconds.", args.benchmark)
                 print("=" * os.get_terminal_size(0)[0])
+            elif len(user_input) and user_input[0] in ["quit", "exit"]:
+                print("Exiting...")
+                break
+            else:
+                print(f"Invalid input:  '{' '.join(user_input)}'")
+    else:
+        for line in sys.stdin:
+            word_1, word_2 = line.split(" ")
+            word_path = WordPath(start_word=word_1, end_word=word_2, graph=graph).get_path()
+            print(word_1, word_2, "out")
+            print(word_path)
 
 
 main()
