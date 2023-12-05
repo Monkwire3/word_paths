@@ -13,14 +13,14 @@ class WordGraph:
 
         variations_graph = defaultdict(list)
 
-        for i, word in enumerate(self.dictionary):
+        for _, word in enumerate(self.dictionary):
             word = word.strip().lower()
             variations = self.get_variations(word)
             for v in variations:
                 variations_graph[v].append(word)
 
 
-        for i, word in enumerate(self.dictionary):
+        for _, word in enumerate(self.dictionary):
             for variation in self.get_variations(word.strip().lower()):
                 for neighbor in variations_graph[variation]:
                     if neighbor != word:

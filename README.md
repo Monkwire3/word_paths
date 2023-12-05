@@ -1,12 +1,17 @@
 # word_paths
-
 **Intro**
-- python version Python >= 3.8 required...
+WordPaths is a short program that generates the shortest path between two words. Each path is guaranteed to use only words from a given dictionary.
 
 
 **Getting Started**
-git clone...
-import main...
+To try out this program yourself, clone the repository:
+`git clone https://github.com/Monkwire3/word_paths.git`
+
+From the root of the directory, run the program using:
+`python3 /src/main.py`
+
+See "Flags" for more run options.
+See the [api reference]()
 
 
 **Flags**
