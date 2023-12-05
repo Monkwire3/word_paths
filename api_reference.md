@@ -5,35 +5,18 @@ Wordpaths consists of two classes: `WordGraph` and `WordPath`.
 
 ### `WordGraph` ###
 
-The `WordGraph` class represents the relationships that words have to each other. Each word is a key which maps to an array containing all of its neighbooring words--words which can be creating by only adding, subtracting, or changes one letter.
+The `WordGraph` class represents relationships that words have to each other. Each word is a key which maps to an array containing all of its neighbooring words--words which can be creating by only adding, subtracting, or changes one letter.
 
 
-WordGraph builds itself on initialization using the words in `dictionary`:
 
 ```py
 class WordGraph:
     def __init__(self, dictionary: list[str]) -> None:
         self.dictionary = dictionary   # list[str]
         self.graph = defaultdict(set)  # dict[str, set[str]]
-
-        variations_graph = defaultdict(list)
-
-        for _, word in enumerate(self.dictionary):
-            word = word.strip().lower()
-            variations = self.__get_variations(word)
-            for v in variations:
-                variations_graph[v].append(word)
-
-
-        for _, word in enumerate(self.dictionary):
-            for variation in self.__get_variations(word.strip().lower()):
-                for neighbor in variations_graph[variation]:
-                    if neighbor != word:
-                        self.graph[word].add(neighbor)
-                        self.graph[neighbor].add(word)
-
 ```
 
+WordGraph builds itself on initialization using the words in `dictionary`:
 
 
 ```py
@@ -45,10 +28,20 @@ Returns the contents of a file split on newlines and striped. This function shou
 ```py
 WordGraph.__get_variations(cls, word: str) -> list[str]
 ```
+`__get_variations` is a private class function returns all variation patterns of a given word. A variation pattern is defined as any string of letters that is only one change away from the origin word. A change is either an added letter, a subtracted letter, or a replaced letter. Underscores in variation patterns represent wildcards and allow for multiple words to match to a single pattern.
 
 
+Whene a WordGraph is initialized, a temporary variations graph is created, mapping variations to all words that they can represent:
 
-### `class WordPath`{:.python} ###
+```py
+{
+    'fl_p' : ['flip', 'flop', 'flap'],
+    'lip'  : ['lip']
+}
+
+```
+
+### `WordPath` ###
 
 ```py
 class WordPath:
@@ -63,4 +56,5 @@ class WordPath:
 
 ```
 
-The `WordPath` traverses a `WordGraph` using a bredth-first search.
+The `WordPath` traverses a `WordGraph` using a bredth-first search. Multiple wordpaths can share a WordGraph. Since WordPaths search one step at a time, it is possible to improve the efficieny of a search by using two WordPaths: one starting on the desired start and end word and the other starting on the desired end word and ending on the desired start word. When both WordPaths contain a shared word, a path can be created.
+

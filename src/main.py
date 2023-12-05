@@ -3,7 +3,7 @@ import os
 import argparse
 import time
 from collections import defaultdict, deque
-from typing import DefaultDict
+
 
 
 class WordGraph:
