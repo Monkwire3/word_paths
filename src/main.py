@@ -30,7 +30,7 @@ class WordGraph:
     @classmethod
     def build_from_file(cls,  path: str) -> "WordGraph":
         with open(path, "r") as f:
-            return cls(f.readlines())
+            return cls(f.read().splitlines())
 
 
     @classmethod
@@ -86,7 +86,6 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="findpath", description="Finds the shortest path between two words")
     parser.add_argument('-p', '--path', default="/usr/share/dict/words")
     parser.add_argument('-b', '--benchmark', default=False)
-    parser.add_argument('-i', '--interactive', action='store_true', default=False)
 
     args = parser.parse_args()
     return args
@@ -97,8 +96,8 @@ def main():
     interactive = sys.stdout.isatty()
     start_time, end_time = 0, 0
 
+    print("Building graph from ", args.path)
 
-    print_if(f"Building graph from {args.path}", interactive)
 
     if args.benchmark:
         start_time = time.perf_counter_ns()
@@ -110,41 +109,34 @@ def main():
 
     print_if(f"Graph built in {(end_time - start_time) // 10 ** 6} milliseconds.", interactive and args.benchmark)
 
-    if interactive:
-        print("Loading interactive mode...")
-        print("Type 'quit' or 'exit' to end program.")
-        user_input = ""
-        while True:
-            user_input = input("Enter two words, separated by a space: \n").split(" ")
-            if len(user_input) == 2:
-                word_1, word_2 = user_input
+    print("Loading interactive mode...")
+    print("Type 'quit' or 'exit' to end program.")
+    user_input = ""
+    while True:
+        user_input = input("Enter two words, separated by a space: \n").split(" ")
+        if len(user_input) == 2:
+            word_1, word_2 = user_input
 
-                if args.benchmark:
-                    start_time = time.perf_counter_ns()
+            if args.benchmark:
+                start_time = time.perf_counter_ns()
 
-                path = WordPath(word_1, word_2, graph)
-                print(path.paths)
-                print(path.get_path())
+            path = WordPath(word_1, word_2, graph)
+            print(path.paths)
+            print(path.get_path())
 
 
-                if args.benchmark:
-                    end_time = time.perf_counter_ns()
+            if args.benchmark:
+                end_time = time.perf_counter_ns()
 
-                print("=" * os.get_terminal_size(0)[0])
-                print(" -> ".join(path.get_path()))
-                print_if(f"Found in {(end_time - start_time) // 10 ** 6} milliseconds.", args.benchmark)
-                print("=" * os.get_terminal_size(0)[0])
-            elif len(user_input) and user_input[0] in ["quit", "exit"]:
-                print("Exiting...")
-                break
-            else:
-                print(f"Invalid input:  '{' '.join(user_input)}'")
-    else:
-        for line in sys.stdin:
-            word_1, word_2 = line.split(" ")
-            word_path = WordPath(start_word=word_1, end_word=word_2, graph=graph).get_path()
-            print(word_1, word_2, "out")
-            print(word_path)
+            print("=" * os.get_terminal_size(0)[0])
+            print(" -> ".join(path.get_path()))
+            print_if(f"Found in {(end_time - start_time) // 10 ** 6} milliseconds.", args.benchmark)
+            print("=" * os.get_terminal_size(0)[0])
+        elif len(user_input) and user_input[0] in ["quit", "exit"]:
+            print("Exiting...")
+            break
+        else:
+            print(f"Invalid input:  '{' '.join(user_input)}'")
 
 
 main()
