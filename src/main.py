@@ -9,7 +9,7 @@ from typing import DefaultDict
 class WordGraph:
     """
     WordGraph.dictionary : list[str]
-    WordGraph.graph      : dict[str, list[str]]
+    WordGraph.graph      : dict[str, set[str]]
 
     """
     def __init__(self, dictionary: list[str]) -> None:
@@ -34,16 +34,6 @@ class WordGraph:
 
     @classmethod
     def build_from_file(cls,  path: str) -> "WordGraph":
-        """
-        >>> graph = WordGraph().build_from_file('/words.txt')
-        {
-            'brace' : ['braces', 'race', 'grace'],
-            'braces': ['brace'],
-            'race'  : ['face', 'brace', 'grace'],
-            'grace' : ['face', 'brace']
-
-        }
-        """
         with open(path, "r") as f:
             return cls(f.read().splitlines())
 
@@ -63,13 +53,13 @@ class WordGraph:
 
 class WordPath:
     def __init__(self, start_word: str, end_word: str, graph: WordGraph) -> None:
-        self.start_word = start_word.lower()
-        self.end_word = end_word.lower()
-        self.paths = dict()
+        self.start_word = start_word.lower()  # str
+        self.end_word = end_word.lower()      # str
+        self.paths = dict()                   # dict[str, str]
         self.paths[start_word] = start_word
-        self.queue = deque()
+        self.queue = deque()                  # deque[str]
         self.queue.append(start_word)
-        self.graph = graph
+        self.graph = graph                    # WordGraph
 
     def find_one_step(self) -> None:
         current = self.queue.popleft()
