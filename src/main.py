@@ -7,7 +7,12 @@ from typing import DefaultDict
 
 
 class WordGraph:
-    def __init__(self, dictionary) -> None:
+    """
+    WordGraph.dictionary : list[str]
+    WordGraph.graph      : dict[str, list[str]]
+
+    """
+    def __init__(self, dictionary: list[str]) -> None:
         self.dictionary = dictionary
         self.graph = defaultdict(set)
 
@@ -15,13 +20,13 @@ class WordGraph:
 
         for _, word in enumerate(self.dictionary):
             word = word.strip().lower()
-            variations = self.get_variations(word)
+            variations = self.__get_variations(word)
             for v in variations:
                 variations_graph[v].append(word)
 
 
         for _, word in enumerate(self.dictionary):
-            for variation in self.get_variations(word.strip().lower()):
+            for variation in self.__get_variations(word.strip().lower()):
                 for neighbor in variations_graph[variation]:
                     if neighbor != word:
                         self.graph[word].add(neighbor)
@@ -29,12 +34,22 @@ class WordGraph:
 
     @classmethod
     def build_from_file(cls,  path: str) -> "WordGraph":
+        """
+        >>> graph = WordGraph().build_from_file('/words.txt')
+        {
+            'brace' : ['braces', 'race', 'grace'],
+            'braces': ['brace'],
+            'race'  : ['face', 'brace', 'grace'],
+            'grace' : ['face', 'brace']
+
+        }
+        """
         with open(path, "r") as f:
             return cls(f.read().splitlines())
 
 
     @classmethod
-    def get_variations(cls, word) -> list[str]:
+    def __get_variations(cls, word: str) -> list[str]:
         variations = []
 
         for i in range(len(word)):

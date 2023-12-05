@@ -1,10 +1,10 @@
-# word_paths
+# WordPaths
 ## Intro ##
-WordPaths is a short program that generates the shortest path between two words. Each path is guaranteed to use only words from a given dictionary.
+WordPaths a short program that generates the shortest path between two words. Each path is guaranteed to use only words from a given dictionary.
 
 
 ## Getting Started ##
-To try out this program yourself, clone the repository:
+To try out this program, clone the repository:
 `git clone https://github.com/Monkwire3/word_paths.git`
 
 From the root of the directory, run the program using:
@@ -13,12 +13,34 @@ From the root of the directory, run the program using:
 See the [api reference](https://github.com/Monkwire3/word_paths/blob/main/api_reference.md) for additional program information.
 
 ## Flags ##
-This program can be run witht the following flags:
+This program can be run with the following flags:
 
-- `-p` or `--path`: Defines the path that the dictionary is pulled from. By default the path is `/usr/share/dict/words`.
+- `-p` or `--path` : Defines the path that the dictionary is pulled from. By default the path is `/usr/share/dict/words`.
 
-- `-b` or `--benchmark`: Toggles on benchmark data printing.
+- `-b` or `--benchmark` : Toggles on benchmark data printing.
 
 Exmaple:
     `python3 src/main.py -p './words.txt' -b`
+
+
+## Usage as a Module ##
+
+
+You can create a word_graph from an array:
+```py
+from wordpaths.src.main import WordGraph, WordPath
+
+word_dict = ['bird', 'bread', 'bard', 'bad', 'bead', 'bald', 'ball']
+word_graph = WordGraph(dictionary=word_dict)
+word_path = WordPaths(start_word="bird", end_word=bald, graph=word_graph)
+
+word_path.get_path()
+# ['bird', 'bard', 'bald']
+```
+
+You can create a word_graph directly from a file
+```py
+word_graph = WordGraph().build_file("{file_path}")
+```
+
 
