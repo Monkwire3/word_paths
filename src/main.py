@@ -13,14 +13,14 @@ class WordGraph:
     build_from_file()
 
     Attributes:
-    dictionary: list[str]
-        all words represented in the graph
     graph : dict[str, set[str]]
         map of words to a list of their neighors
 
-    Operators:
-    __get_variations(word):
+    Functions:
+    _get_variations():
         Return a list of variation patterns that match the `word`.
+    get_path():
+        Return the shortest path between two words such that each step both a valid word and a neighbor to it's predecessor.
     """
 
     def __init__(self, dictionary: list[str]) -> None:
@@ -31,20 +31,20 @@ class WordGraph:
             List of words used to generate the graph
         """
 
-        self.dictionary = dictionary.copy()
+        dictionary = dictionary.copy()
         self.graph = defaultdict(set)
 
         variations_graph = defaultdict(list)
 
-        for _, word in enumerate(self.dictionary):
+        for _, word in enumerate(dictionary):
             word = word.strip().lower()
-            variations = self.__get_variations(word)
+            variations = self._get_variations(word)
             for v in variations:
                 variations_graph[v].append(word)
 
 
-        for _, word in enumerate(self.dictionary):
-            for variation in self.__get_variations(word.strip().lower()):
+        for _, word in enumerate(dictionary):
+            for variation in self._get_variations(word.strip().lower()):
                 for neighbor in variations_graph[variation]:
                     if neighbor != word:
                         self.graph[word].add(neighbor)
@@ -66,7 +66,7 @@ class WordGraph:
 
 
     @classmethod
-    def __get_variations(cls, word: str) -> list[str]:
+    def _get_variations(cls, word: str) -> list[str]:
         """Return a list of variation patterns that match a word.
 
         Variation patterns are strings which are one addition, subtraction, or substitution different from the input word. Wildcards are reprented by underscores.
@@ -85,6 +85,15 @@ class WordGraph:
         variations.append(word + "_")
 
         return variations
+
+    def get_path(self, start_word, end_word) -> list[str]:
+        """Return an array of strings representing the shortest possible path between two words.
+
+        A path between words is a series of words from the given dictionary, such that each word is only one addition, subtraction, or substitution different from the word before it.
+        """
+        return WordPath(start_word=start_word, end_word=end_word, graph=self).get_path()
+
+
 
 
 
@@ -118,8 +127,6 @@ class WordPath:
             graph that can be travered to build a WordPath
 
         """
-
-
 
         self.start_word = start_word.lower()  # str
         self.end_word = end_word.lower()      # str
@@ -178,7 +185,8 @@ def main():
     interactive = sys.stdout.isatty()
     start_time, end_time = 0, 0
 
-    print("Building graph from ", args.path)
+
+    print("Building graph from", args.path)
 
 
     if args.benchmark:
@@ -202,13 +210,13 @@ def main():
             if args.benchmark:
                 start_time = time.perf_counter_ns()
 
-            path = WordPath(word_1, word_2, graph)
+            path = graph.get_path(word_1, word_2)
 
             if args.benchmark:
                 end_time = time.perf_counter_ns()
 
             print("=" * os.get_terminal_size(0)[0])
-            print(" -> ".join(path.get_path()))
+            print(" -> ".join(path))
             print_if(f"Found in {(end_time - start_time) // 10 ** 6} milliseconds.", args.benchmark)
             print("=" * os.get_terminal_size(0)[0])
         elif len(user_input) and user_input[0] in ["quit", "exit"]:

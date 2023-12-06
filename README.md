@@ -1,7 +1,12 @@
 # WordPaths
 ## Intro ##
-WordPaths generates the shortest path between two words. Each path is guaranteed to use only words from a given dictionary.
+WordPaths generates the shortest path between two words, such each step in the path is both a valid dictionary word and only one addition, subtraction, or substitution different fromn the previous step.
 
+For example the path between "word" and "path" might look like:
+
+```py
+['word', 'wore', 'ware', 'pare', 'pate', 'path']
+```
 
 ## Getting Started ##
 To try out this program, clone the repository:
@@ -26,23 +31,24 @@ To start the program with all flags, run:
 
 
 ## Usage as a Module ##
+First, import the WordGraph:
 
+```py
+from wordpaths.src.main import WordGraph, WordPath
+```
 
 You can create a `WordGraph` from an array:
 ```py
-from wordpaths.src.main import WordGraph, WordPath
-
 word_dict = ['bird', 'bread', 'bard', 'bad', 'bead', 'bald', 'ball']
-word_graph = WordGraph(dictionary=word_dict)
-word_path = WordPaths(start_word="bird", end_word='bald', graph=word_graph)
-
-word_path.get_path()
-# ['bird', 'bard', 'bald']
 ```
 
-You can create a word_graph directly from a file:
+Or, you can create a `WordGraph` from a file:
 ```py
 word_graph = WordGraph().build_file("/words.txt")
 ```
 
-
+To find the path between two words in a WordGraph, use `get_path()`:
+```py
+word_graph.get_path(start_word="bird": end_word="bald")
+# ['bird', 'bard', 'bald']
+```
