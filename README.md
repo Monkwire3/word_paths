@@ -1,6 +1,7 @@
 # WordPaths
 ## Intro ##
-WordPaths generates the shortest path between two words, such each step in the path is both a valid dictionary word and only one addition, subtraction, or substitution different fromn the previous step.
+WordPaths generates the shortest path between two words, such each step in the path is both a valid dictionary word and only one addition, subtraction, or substitution away from the previous step.
+
 
 For example the path between "word" and "path" might look like:
 
@@ -17,7 +18,8 @@ From the root of the directory, run the program using:
 
 `python3 src/main.py`
 
-See the [api reference](https://github.com/Monkwire3/word_paths/blob/main/api_reference.md) for additional information.
+You will need Python version 3.11 or newer to run WordPaths.
+
 
 ## Flags ##
 This program can be run with the following flags:
@@ -44,7 +46,7 @@ word_dict = ['bird', 'bread', 'bard', 'bad', 'bead', 'bald', 'ball']
 
 Or, you can create a `WordGraph` from a file:
 ```py
-word_graph = WordGraph().build_file("/words.txt")
+word_graph = WordGraph().build_file("./words.txt")
 ```
 
 To find the path between two words in a WordGraph, use `get_path()`:
@@ -52,3 +54,4 @@ To find the path between two words in a WordGraph, use `get_path()`:
 word_graph.get_path(start_word="bird": end_word="bald")
 # ['bird', 'bard', 'bald']
 ```
+See the [api reference](https://github.com/Monkwire3/word_paths/blob/main/api_reference.md) for more a more comprehensive guide to using the program.
