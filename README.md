@@ -3,10 +3,10 @@
 WordPaths generates the shortest path between two words, such each step in the path is both a valid dictionary word and only one addition, subtraction, or substitution away from the previous step.
 
 
-For example the path between "word" and "path" might look like:
+For example, the path between "word" and "paths" might look like:
 
 ```py
-['word', 'wore', 'ware', 'pare', 'pate', 'path']
+['word', 'ward', 'wars', 'warts', 'parts', 'pats', 'paths']
 ```
 
 ## Getting Started ##

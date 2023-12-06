@@ -91,7 +91,8 @@ class WordGraph:
 
         A path between words is a series of words from the given dictionary, such that each word is only one addition, subtraction, or substitution different from the word before it.
         """
-        return WordPath(start_word=start_word, end_word=end_word, graph=self).get_path()
+        path = WordPath(start_word=start_word, end_word=end_word, graph=self)
+        return path.get_path()
 
 
 
