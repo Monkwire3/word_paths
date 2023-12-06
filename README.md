@@ -50,7 +50,7 @@ Or, you can create a `WordGraph` from a file:
 word_graph = WordGraph().build_file("./words.txt")
 ```
 
-To find the path between two words in a WordGraph, use `get_path()`:
+To find the path between two words in a `WordGraph`, use `get_path()`:
 ```py
 word_graph.get_path(start_word="bird": end_word="bald")
 # ['bird', 'bard', 'bald']
