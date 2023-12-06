@@ -24,9 +24,9 @@ You will need Python version 3.11 or newer to run WordPaths.
 ## Flags ##
 This program can be run with the following flags:
 
-- `-p` or `--path` : Defines the path that the dictionary is pulled from. By default the path is `/usr/share/dict/words`.
+- `-p` or `--path` -- Defines the path that the dictionary is pulled from. The default path is `/usr/share/dict/words`.
 
-- `-b` or `--benchmark` : Toggles on benchmark mode. In benchmark mode, all operations are timed, and speeds are printed.
+- `-b` or `--benchmark` -- Toggles on benchmark mode. In benchmark mode, all operations are timed, and speeds are printed.
 
 To start the program with all flags, run:
 `python3 src/main.py -p './words.txt' -b`
