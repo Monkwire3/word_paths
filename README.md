@@ -33,15 +33,16 @@ To start the program with all flags, run:
 
 
 ## Usage as a Module ##
-First, import the WordGraph:
+First, import the `WordGraph` class:
 
 ```py
-from wordpaths.src.main import WordGraph, WordPath
+from wordpaths.src.main import WordGraph
 ```
 
 You can create a `WordGraph` from an array:
 ```py
 word_dict = ['bird', 'bread', 'bard', 'bad', 'bead', 'bald', 'ball']
+word_graph = WordGraph(dictionary=word_dict)
 ```
 
 Or, you can create a `WordGraph` from a file:

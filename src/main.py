@@ -225,5 +225,5 @@ def main():
         else:
             print(f"Invalid input:  '{' '.join(user_input)}'")
 
-
-main()
+if __name__ == "__main__":
+    main()
