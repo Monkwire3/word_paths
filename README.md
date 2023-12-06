@@ -1,6 +1,6 @@
 # WordPaths
 ## Intro ##
-WordPaths generates the shortest path between two words, such each step in the path is both a valid dictionary word and only one addition, subtraction, or substitution away from the previous step.
+WordPaths generates the shortest path between two words, such that step in the path is both a valid dictionary word and only one addition, subtraction, or substitution away from the previous step.
 
 
 For example, the path between "word" and "paths" might look like:
