@@ -21,6 +21,7 @@ A class that represents a mapping of words to their neighbors. Neighbors are def
 - `build_from_file()` -- Constructor. Build a `WordGraph` from a file containing strings, separated by newlines.
 	- **Parameters**:
 		- `path : str` -- location of source file
+- `get_path()` -- Return an array representing the shortest path between two words.
 
 
 # WordPath #
