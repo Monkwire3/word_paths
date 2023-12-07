@@ -31,8 +31,9 @@ class WordGraph:
             List of words used to generate the graph
         """
 
+        self.graph = defaultdict(set) # Defaultdict[str, set[str]]
+
         dictionary = dictionary.copy()
-        self.graph = defaultdict(set)
 
         variations_graph = defaultdict(list)
 
@@ -126,13 +127,11 @@ class WordPath:
 
         """
 
-        self.start_word = start_word.lower()  # str
-        self.end_word = end_word.lower()      # str
-        self.paths = dict()                   # dict[str, str]
-        self.paths[start_word] = start_word
-        self.queue = deque()                  # deque[str]
-        self.queue.append(start_word)
-        self.graph = graph                    # WordGraph
+        self.start_word = start_word.lower()      # str
+        self.end_word = end_word.lower()          # str
+        self.paths = dict(start_word=start_word)  # dict[str, str]
+        self.queue = deque([start_word])          # deque[str]
+        self.graph = graph                        # WordGraph
 
     def find_one_step(self) -> None:
         """Advance one step in a breadth-first search."""
