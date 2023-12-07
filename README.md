@@ -55,4 +55,4 @@ To find the path between two words in a `WordGraph`, use `get_path()`:
 word_graph.get_path(start_word="bird": end_word="bald")
 # ['bird', 'bard', 'bald']
 ```
-See the [api reference](https://github.com/Monkwire3/word_paths/blob/main/api_reference.md) for more a more comprehensive guide.
+See the [api reference](https://github.com/Monkwire3/word_paths/blob/main/api_reference.md) for a more comprehensive guide.
